@@ -24,6 +24,11 @@ class ModelConfig:
     instance: BaseChatModel | None = None
     extra_params: dict[str, Any] | None = None
     supports_vision: bool = True
+    # Optional pacing for hosted endpoints with strict tokens-per-minute caps.
+    # Applied via langchain InMemoryRateLimiter on the built chat model; covers
+    # main agent + subagents + caption pre-pass since they share the model
+    # instance. Estimate: rpm ≈ TPM_limit / avg_input_tokens_per_call.
+    requests_per_minute: int | None = None
 
 
 def _default_text_model() -> ModelConfig:
@@ -50,6 +55,17 @@ class ConvertOptions:
 
     max_chunk_tokens: int = 20_000
     recursion_limit: int = 200
+
+    # Sleep (seconds) inserted between consecutive chunk renders in aconvert.
+    # 0 = no sleep. Useful when the LLM endpoint has a tokens-per-minute cap
+    # and a single large render burns the full budget; sleeping lets the
+    # budget reset before the next chunk starts.
+    inter_chunk_sleep_seconds: float = 0.0
+
+    # Shortcut: applies to text_model and vision_model if their own
+    # ModelConfig.requests_per_minute is None. Set this when both models live
+    # behind the same TPM-limited endpoint.
+    model_requests_per_minute: int | None = None
 
     enable_quality_review: bool = True
     enable_quality_clean: bool = True

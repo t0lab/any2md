@@ -46,9 +46,15 @@ def main() -> int:
     no_captions = "--no-captions" in args
     debug = "--debug" in args
     max_tokens: int | None = None
+    rpm: int | None = None
+    sleep: float | None = None
     for a in args:
         if a.startswith("--max-tokens="):
             max_tokens = int(a.split("=", 1)[1])
+        elif a.startswith("--rpm="):
+            rpm = int(a.split("=", 1)[1])
+        elif a.startswith("--sleep="):
+            sleep = float(a.split("=", 1)[1])
     positional = [a for a in args if not a.startswith("--")]
     source = Path(positional[0]).resolve() if positional else DEFAULT_SOURCE
     if not source.exists():
@@ -61,6 +67,7 @@ def main() -> int:
         f"clean={'off' if no_clean else 'on'} "
         f"captions={'off' if no_captions else 'on'} "
         f"max_tokens={max_tokens if max_tokens else 'default'} "
+        f"rpm={rpm if rpm else 'unlimited'} sleep={sleep if sleep else 0} "
         f"debug={'on' if debug else 'off'}",
         file=sys.stderr,
     )
@@ -81,6 +88,8 @@ def main() -> int:
         enable_image_captions=not no_captions,
         debug_workspace=(ROOT / "workspace") if debug else None,
         **({"max_chunk_tokens": max_tokens} if max_tokens else {}),
+        **({"model_requests_per_minute": rpm} if rpm else {}),
+        **({"inter_chunk_sleep_seconds": sleep} if sleep else {}),
     )
 
     t0 = time.perf_counter()

@@ -25,6 +25,7 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 import tempfile
+from dataclasses import replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -90,6 +91,29 @@ async def aconvert(
             "(add [databricks] / [openai] / [anthropic] / [google] for your provider)."
         ) from e
 
+    # Propagate convert-level RPM shortcut down to per-model configs unless
+    # each model already specifies its own pacing.
+    if options.model_requests_per_minute is not None:
+        options = replace(
+            options,
+            text_model=replace(
+                options.text_model,
+                requests_per_minute=(
+                    options.text_model.requests_per_minute
+                    if options.text_model.requests_per_minute is not None
+                    else options.model_requests_per_minute
+                ),
+            ),
+            vision_model=replace(
+                options.vision_model,
+                requests_per_minute=(
+                    options.vision_model.requests_per_minute
+                    if options.vision_model.requests_per_minute is not None
+                    else options.model_requests_per_minute
+                ),
+            ),
+        )
+
     cleaned = extract_and_clean(src)
 
     captions: dict[str, str] = {}
@@ -104,7 +128,9 @@ async def aconvert(
 
     parts: list[str] = []
     previous_tail: str | None = None
-    for chunk in chunks:
+    for i, chunk in enumerate(chunks):
+        if i > 0 and options.inter_chunk_sleep_seconds > 0:
+            await asyncio.sleep(options.inter_chunk_sleep_seconds)
         chunk_refs = collect_image_refs(chunk["ir"])
         chunk_image_ids = {r["id"] for r in chunk_refs}
         chunk_captions = {

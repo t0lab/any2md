@@ -52,6 +52,7 @@ def _agent_key(options: "ConvertOptions") -> tuple:
     )
     return (
         model_id,
+        tm.requests_per_minute,
         options.enable_quality_review,
         options.enable_quality_clean,
         options.caption_language,
