@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "prompt-engineering": {
+      "source": "t0lab/.skills",
+      "sourceType": "github",
+      "skillPath": "prompt-engineering/SKILL.md",
+      "computedHash": "63fc8618a46c93415b22cb0ea7b614f7f13a9a3f4b757ab6860bb94594a22d88"
+    }
+  }
+}

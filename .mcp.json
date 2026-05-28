@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "langsmith": {
+      "command": "py",
+      "args": ["scripts/langsmith_mcp.py"]
+    }
+  }
+}

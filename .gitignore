@@ -1,0 +1,40 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Agent workspace (per-conversion scratch + draft.md / final.md)
+workspace/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pytest / tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Claude Code per-user local settings (settings.json itself is committed)
+.claude/settings.local.json
+
+# Generated IR artifacts (regenerable via scripts/dump_ir.py). AUDIT.md stays.
+samples/_ir/*/
+
+# Pipeline run logs (kept .actual.md as reference snapshots)
+samples/_md_actual/*.log
