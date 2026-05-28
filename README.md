@@ -135,7 +135,7 @@ The library has no Databricks runtime dependency — installing the same wheel t
 - **Auth**: On the cluster, workspace credentials are auto-picked. Locally, set `DATABRICKS_HOST` + `DATABRICKS_TOKEN`.
 - **Models**: Built-in support for Foundation Model API endpoints (`databricks-claude-sonnet-4-6`, `databricks-claude-haiku-4-5`, `databricks-claude-opus-4-7`) via `databricks_langchain.ChatDatabricks`. Other providers work just as well — `convert()` doesn't care where the model lives.
 
-Constraints documented in [02-platform.md](docs/superpowers/specs/2026-05-21-databricks-converter/02-platform.md).
+Constraints documented in [02-platform.md](docs/superpowers/specs/2026-05-21-databricks-converter/02-platform.md). For step-by-step notebook usage — install, model choice, UC path conventions, troubleshooting — see [docs/databricks.md](docs/databricks.md).
 
 ## Observability
 
